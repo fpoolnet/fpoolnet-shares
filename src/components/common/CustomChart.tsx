@@ -48,9 +48,12 @@ const CustomChart = ({
       bottomColor: areaBottomColor,
       lineColor: lineColor,
       lineWidth: 2,
-      title: valueFormatter
-        ? valueFormatter(dataPoints[dataPoints.length - 1].value)
-        : dataPoints[dataPoints.length - 1].value.toString()
+      title:
+        valueFormatter && dataPoints.length
+          ? valueFormatter(dataPoints[dataPoints.length - 1].value)
+          : dataPoints.length
+            ? dataPoints[dataPoints.length - 1].value.toString()
+            : ''
     });
 
     areaSeriesRef.current.setData(dataPoints);

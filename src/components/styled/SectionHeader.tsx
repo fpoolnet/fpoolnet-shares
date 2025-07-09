@@ -6,7 +6,7 @@ export const SectionHeader = styled(Box)(() => ({
   borderBottom: `2px solid ${PRIMARY_BLUE}`,
   padding: '10px 5px',
   fontWeight: 'bold',
-  fontSize: '1.5rem',
+  fontSize: '1.3rem',
   marginBottom: '1rem',
   color: PRIMARY_BLUE
 }));
