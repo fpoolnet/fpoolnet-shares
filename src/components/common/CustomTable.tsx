@@ -117,7 +117,7 @@ const CustomTable = (props: CustomTableProps) => {
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           disableColumnMenu={!filters}
-          pageSizeOptions={[50, 100, 200, 500]}
+          pageSizeOptions={[10, 25, 50, 100]}
           rowSelectionModel={selectionModel}
           initialState={{
             density: 'compact'

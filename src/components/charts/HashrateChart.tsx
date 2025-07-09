@@ -39,32 +39,35 @@ const HashrateChart = () => {
         component="section"
         sx={{
           p: 2,
-          minHeight: '200px',
+          minHeight: '150px',
           justifyContent: 'center'
         }}>
         <SectionHeader>
           <Box>{t('hashrateChart')}</Box>
         </SectionHeader>
         {isLoading && address && <ProgressLoader value={hashrates.length} />}
-        {!isLoading && !!dataPoints.length && address ? (
-          <CustomChart
-            dataPoints={dataPoints}
-            height={300}
-            lineColor={PRIMARY_BLUE}
-            valueFormatter={formatHashrate}
-          />
-        ) : (
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingTop: 1,
-              fontSize: '0.9rem'
-            }}>
-            No data
-          </Box>
+        {!isLoading && (
+          dataPoints.length > 0 && address ? (
+            <CustomChart
+              dataPoints={dataPoints}
+              height={300}
+              lineColor={PRIMARY_BLUE}
+              valueFormatter={formatHashrate}
+            />
+          ) : (
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingTop: 1,
+                fontSize: '0.9rem'
+              }}
+            >
+              No data
+            </Box>
+          )
         )}
       </Box>
     </StyledCard>

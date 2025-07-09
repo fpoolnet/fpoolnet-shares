@@ -39,7 +39,7 @@ const SharesTable = () => {
         <SectionHeader>{t('pendingShares')}</SectionHeader>
         {isLoading && address && <ProgressLoader value={shares.length} />}
         {!isLoading && address && (
-          <Box sx={{ height: sharesCount ? 350 : 100 }}>
+          <Box sx={{  height: sharesCount ? 250 : 100 }}>
             <CustomTable
               columns={columns}
               rows={dataTable}
