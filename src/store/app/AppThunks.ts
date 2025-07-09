@@ -1,5 +1,6 @@
+import { Container } from 'typedi';
 import { ISettings } from '@objects/interfaces/ISettings';
-import RelayService from '@services/api/RelayService';
+import { RelayService } from '@services/api/RelayService';
 import { createAppAsyncThunk } from '@store/createAppAsyncThunk';
 import { beautify } from '@utils/beautifierUtils';
 import {
@@ -16,8 +17,9 @@ export const getPayouts = createAppAsyncThunk(
   'relay/getPayouts',
   async (address: string, { rejectWithValue, dispatch }) => {
     try {
-      RelayService.subscribePayouts(address, {
-        onevent: (event) => {
+      const relayService: any = Container.get(RelayService);
+      relayService.subscribePayouts(address, {
+        onevent: (event: any) => {
           const payoutEvent = beautify(event);
           dispatch(addPayout(payoutEvent));
         },
@@ -42,7 +44,8 @@ export const stopPayouts = createAppAsyncThunk(
   'relay/stopPayouts',
   async (_, { rejectWithValue }) => {
     try {
-      RelayService.stopPayouts();
+      const relayService: any = Container.get(RelayService);
+      relayService.stopPayouts();
       return;
     } catch (err: any) {
       return rejectWithValue({
@@ -58,8 +61,9 @@ export const getShares = createAppAsyncThunk(
   'relay/getShares',
   async (address: string, { rejectWithValue, dispatch }) => {
     try {
-      RelayService.subscribeShares(address, {
-        onevent: (event) => {
+      const relayService: any = Container.get(RelayService);
+      relayService.subscribeShares(address, {
+        onevent: (event: any) => {
           const shareEvent = beautify(event);
           dispatch(addShare(shareEvent));
         },
@@ -83,7 +87,8 @@ export const stopShares = createAppAsyncThunk(
   'relay/stopShares',
   async (_, { rejectWithValue }) => {
     try {
-      RelayService.stopShares();
+      const relayService: any = Container.get(RelayService);
+      relayService.stopShares();
       return;
     } catch (err: any) {
       return rejectWithValue({
@@ -99,8 +104,9 @@ export const getHashrates = createAppAsyncThunk(
   'relay/getHashrates',
   async (address: string, { rejectWithValue, dispatch }) => {
     try {
-      RelayService.subscribeHashrates(address, {
-        onevent: (event) => {
+      const relayService: any = Container.get(RelayService);
+      relayService.subscribeHashrates(address, {
+        onevent: (event: any) => {
           const hashrateEvent = beautify(event);
           dispatch(addHashrate(hashrateEvent));
         },
@@ -124,7 +130,8 @@ export const stopHashrates = createAppAsyncThunk(
   'relay/stopHashrate',
   async (_, { rejectWithValue }) => {
     try {
-      RelayService.stopHashrates();
+      const relayService: any = Container.get(RelayService);
+      relayService.stopHashrates();
       return;
     } catch (err: any) {
       return rejectWithValue({
@@ -136,11 +143,29 @@ export const stopHashrates = createAppAsyncThunk(
   }
 );
 
+export const connectRelay = createAppAsyncThunk(
+  'relay/connectRelay',
+  async (settings: ISettings, { rejectWithValue }) => {
+    try {
+      const relayService: any = Container.get(RelayService);
+      await relayService.connectRelay(settings.relay);
+      return settings;
+    } catch (err: any) {
+      return rejectWithValue({
+        message: err?.message || err,
+        code: err.code,
+        status: err.status
+      });
+    }
+  }
+);
+
 export const changeRelay = createAppAsyncThunk(
   'relay/changeRelay',
   async (settings: ISettings, { rejectWithValue }) => {
     try {
-      await RelayService.changeRelay(settings.relay);
+      const relayService: any = Container.get(RelayService);
+      await relayService.connectRelay(settings.relay);
       return settings;
     } catch (err: any) {
       return rejectWithValue({

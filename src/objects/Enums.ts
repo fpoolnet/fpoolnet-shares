@@ -10,3 +10,9 @@ export enum RequestSecurityType {
   Protected = 'PROTECTED',
   Public = 'PUBLIC'
 }
+
+export enum NetworkTypeType {
+  Mainnet = 'MAINNET',
+  Testnet = 'TESTNET',
+  Regtest = 'REGTEST'
+}

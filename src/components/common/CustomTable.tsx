@@ -20,6 +20,7 @@ interface CustomTableProps {
   isLoading?: boolean;
   filters?: boolean;
   autoSelectAll?: boolean;
+  defaultPageSize?: number;
   onRowAdd?: () => void;
   onRowEdit?: (id: string) => void;
   onRowDelete?: (id: string) => void;
@@ -43,6 +44,7 @@ const CustomTable = (props: CustomTableProps) => {
     rows,
     rowCount,
     autoSelectAll,
+    defaultPageSize,
     isLoading,
     onRowEdit,
     onRowAdd,
@@ -101,6 +103,15 @@ const CustomTable = (props: CustomTableProps) => {
       setSelectionModel(rowIds);
     }
   }, [autoSelectAll, rows]);
+
+  useEffect(() => {
+    if (defaultPageSize) {
+      setPaginationModel({
+        pageSize: defaultPageSize,
+        page: 0
+      });
+    }
+  }, [defaultPageSize]);
 
   return (
     <>

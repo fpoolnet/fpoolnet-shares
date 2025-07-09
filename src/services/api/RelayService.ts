@@ -1,19 +1,17 @@
 import { Filter } from 'nostr-tools';
 import { SubscriptionParams } from 'nostr-tools/lib/types/relay';
-import { RELAY_URL } from '@constants/config';
+import { Service } from 'typedi';
 import { NostrClient } from '@services/NostrClient';
 import { getTimeBeforeDaysInSeconds } from '@utils/Utils';
-
+import { PAYOUTS_PUBLIC_KEY, SHARES_PUBLIC_KEY } from '@constants/config';
+@Service()
 export class RelayService {
-  public nostrClient: NostrClient;
+  public nostrClient: any;
   public payoutsSubscription: any;
   public sharesSubscription: any;
   public hashratesSubscription: any;
 
-  constructor(relayUrl: string, privateKey?: string) {
-    this.nostrClient = new NostrClient({ relayUrl, privateKey });
-    this.nostrClient.connect();
-  }
+  constructor() {}
 
   subscribePayouts(address: string, subscriptionParams: SubscriptionParams) {
     this.stopPayouts();
@@ -21,13 +19,13 @@ export class RelayService {
     const filters: Filter[] = [
       {
         kinds: [35505],
-        // authors: [PAYOUTS_PUBLIC_KEY],
+        authors: [PAYOUTS_PUBLIC_KEY],
         since: getTimeBeforeDaysInSeconds(5),
         [`#a`]: [address]
       },
       {
         kinds: [35505],
-        // authors: [PAYOUTS_PUBLIC_KEY],
+        authors: [PAYOUTS_PUBLIC_KEY],
         limit: 500,
         [`#a`]: [address]
       }
@@ -50,7 +48,7 @@ export class RelayService {
     const filters: Filter[] = [
       {
         kinds: [35503],
-        // authors: [SHARES_PUBLIC_KEY],
+        authors: [SHARES_PUBLIC_KEY],
         limit: 500,
         [`#a`]: [address]
       }
@@ -73,6 +71,7 @@ export class RelayService {
     const filters: Filter[] = [
       {
         kinds: [35502],
+        authors: [SHARES_PUBLIC_KEY],
         limit: 500,
         [`#a`]: [address]
       }
@@ -89,18 +88,21 @@ export class RelayService {
     }
   }
 
-  async changeRelay(relayUrl: string, privateKey?: string) {
-    const currentRelayUrl = this.nostrClient.relay.url.replace(/\/+$/, '').toLowerCase();
-    const newRelayUrl = relayUrl.replace(/\/+$/, '').toLowerCase();
-    if (currentRelayUrl != newRelayUrl) {
-      await this.stopPayouts();
-      await this.stopShares();
-      await this.stopHashrates();
-      await this.nostrClient.relay.close();
+  async connectRelay(relayUrl: string, privateKey?: string) {
+    if (!this.nostrClient) {
       this.nostrClient = new NostrClient({ relayUrl, privateKey });
       await this.nostrClient.connect();
+    } else {
+      const currentRelayUrl = this.nostrClient.relay.url.replace(/\/+$/, '').toLowerCase();
+      const newRelayUrl = relayUrl.replace(/\/+$/, '').toLowerCase();
+      if (currentRelayUrl != newRelayUrl) {
+        await this.stopPayouts();
+        await this.stopShares();
+        await this.stopHashrates();
+        await this.nostrClient.relay.close();
+        this.nostrClient = new NostrClient({ relayUrl, privateKey });
+        await this.nostrClient.connect();
+      }
     }
   }
 }
-
-export default new RelayService(RELAY_URL);

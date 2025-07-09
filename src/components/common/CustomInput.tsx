@@ -1,4 +1,4 @@
-import { FieldError, UseFormRegisterReturn } from 'react-hook-form';
+import { UseFormRegisterReturn } from 'react-hook-form';
 import { FormControl, TextField, TextFieldProps } from '@mui/material';
 import { PRIMARY_RED, SECONDARY_GREY_1 } from '@styles/colors';
 import CustomTooltip from './CustomTooltip';
@@ -13,7 +13,7 @@ interface CustomInputProps {
   variant?: TextFieldProps['variant'];
   type?: string;
   register: UseFormRegisterReturn;
-  error?: FieldError;
+  error?: any;
 }
 
 const CustomInput = (props: CustomInputProps) => {

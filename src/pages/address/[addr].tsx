@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import HashrateChart from '@components/charts/HashrateChart';
@@ -8,7 +8,7 @@ import SharesTable from '@components/tables/shares/SharesTable';
 import { useNotification } from '@hooks/UseNotificationHook';
 import { addAddress, clearPayouts } from '@store/app/AppReducer';
 import { getSettings } from '@store/app/AppSelectors';
-import { getHashrates, getPayouts, getShares } from '@store/app/AppThunks';
+import { connectRelay, getHashrates, getPayouts, getShares } from '@store/app/AppThunks';
 import { useDispatch, useSelector } from '@store/store';
 import { validateAddress } from '@utils/Utils';
 
@@ -19,6 +19,8 @@ const AddressPage = () => {
   const { addr } = router.query;
   const settings = useSelector(getSettings);
   const { showError } = useNotification();
+
+  const hasConnectedRelayRef = useRef(false);
 
   useEffect(() => {
     if (addr && typeof addr === 'string') {
@@ -40,6 +42,13 @@ const AddressPage = () => {
       }
     }
   }, [addr]);
+
+  useEffect(() => {
+    if (settings && !hasConnectedRelayRef.current) {
+      dispatch(connectRelay(settings));
+      hasConnectedRelayRef.current = true;
+    }
+  }, [settings]);
 
   return (
     <Box

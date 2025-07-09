@@ -1,13 +1,15 @@
 /* Core */
-import { RELAY_URL } from '@constants/config';
+import { PAYOUTS_PUBLIC_KEY, RELAY_URL, SHARES_PUBLIC_KEY } from '@constants/config';
 import { ICustomError } from '@interfaces/ICustomError';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { NetworkTypeType } from '@objects/Enums';
 import { IHashrateEvent } from '@objects/interfaces/IHashrateEvent';
 import { IPayoutEvent } from '@objects/interfaces/IPayoutEvent';
 import { ISettings } from '@objects/interfaces/ISettings';
 import { IShareEvent } from '@objects/interfaces/IShareEvent';
 import {
   changeRelay,
+  connectRelay,
   getHashrates,
   getPayouts,
   getShares,
@@ -38,7 +40,12 @@ export const initialState: AppState = {
   shares: [],
   payouts: [],
   unconfirmedBalance: 0,
-  settings: { relay: RELAY_URL, network: 'mainnet' },
+  settings: {
+    relay: RELAY_URL,
+    network: NetworkTypeType.Mainnet,
+    payerPublicKey: PAYOUTS_PUBLIC_KEY,
+    workProviderPublicKey: SHARES_PUBLIC_KEY
+  },
   isHashrateLoading: false,
   isSharesLoading: false,
   isPayoutsLoading: false,
@@ -76,6 +83,9 @@ export const slice = createSlice({
     },
     setPayoutEose: (state: AppState, action: PayloadAction<boolean>) => {
       state.isPayoutsLoading = action.payload;
+    },
+    setSettings: (state: AppState, action: PayloadAction<ISettings>) => {
+      state.settings = action.payload;
     },
     addPayout: (state: AppState, action: PayloadAction<IPayoutEvent>) => {
       const event = action.payload;
@@ -159,13 +169,19 @@ export const slice = createSlice({
         state.address = undefined;
       })
       .addCase(changeRelay.fulfilled, (state, action) => {
-        state.settings = {
-          ...state.settings,
-          relay: action.payload.relay,
-          network: action.payload.network
-        };
+        state.settings = action.payload;
       })
       .addCase(changeRelay.rejected, (state, action) => {
+        state.error = action.payload;
+        state.isPayoutsLoading = false;
+        state.isSharesLoading = false;
+      })
+      .addCase(connectRelay.pending, (state) => {
+        state.error = undefined;
+        state.payouts = [];
+        state.address = undefined;
+      })
+      .addCase(connectRelay.rejected, (state, action) => {
         state.error = action.payload;
         state.isPayoutsLoading = false;
         state.isSharesLoading = false;
@@ -185,7 +201,8 @@ export const {
   setHashratesLoader,
   setPayoutLoader,
   setShareLoader,
-  setPayoutEose
+  setPayoutEose,
+  setSettings
 } = slice.actions;
 
 export default appReducer;

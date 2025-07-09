@@ -1,4 +1,5 @@
 import { address, networks } from 'flokicoinjs-lib';
+import { NetworkTypeType } from '@objects/Enums';
 import { IDataPoint } from '@objects/interfaces/IDatapoint';
 
 export const setWidthStyle = (width?: any) => {
@@ -41,10 +42,10 @@ export const validateAddress = (addr: string, network?: string) => {
   try {
     let currentNet;
     switch (network) {
-      case 'testnet':
+      case NetworkTypeType.Testnet:
         currentNet = networks.testnet;
         break;
-      case 'regtest':
+      case NetworkTypeType.Regtest:
         currentNet = networks.regtest;
         break;
       default:

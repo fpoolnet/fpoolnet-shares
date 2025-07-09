@@ -46,8 +46,8 @@ const HashrateChart = () => {
           <Box>{t('hashrateChart')}</Box>
         </SectionHeader>
         {isLoading && address && <ProgressLoader value={hashrates.length} />}
-        {!isLoading && (
-          dataPoints.length > 0 && address ? (
+        {!isLoading &&
+          (dataPoints.length > 0 && address ? (
             <CustomChart
               dataPoints={dataPoints}
               height={300}
@@ -63,12 +63,10 @@ const HashrateChart = () => {
                 justifyContent: 'center',
                 paddingTop: 1,
                 fontSize: '0.9rem'
-              }}
-            >
+              }}>
               No data
             </Box>
-          )
-        )}
+          ))}
       </Box>
     </StyledCard>
   );
