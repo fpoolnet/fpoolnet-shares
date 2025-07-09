@@ -1,0 +1,43 @@
+{
+  "address": "Enter your address...",
+  "invalidAddressFormat": "Invalid Flokicoin address format",
+  "invalidAddress": "Invalid Flokicoin address",
+  "addressRequired": "Address is required",
+  "time": "Time",
+  "block": "Block",
+  "shares": "Shares",
+  "pendingShares": "Pending shares",
+  "totalShares": "Total shares",
+  "unconfirmedBalance": "Unconfirmed balance",
+  "profit": "Profit (FLC)",
+  "fee": "Fee (LOKI)",
+  "relay": "Relay",
+  "mainnet": "Mainnet",
+  "regtest": "Regtest",
+  "testnet": "Testnet",
+  "network": "Network",
+  "settings": "Settings",
+  "payouts": "Payouts",
+  "relayUrlRequired": "Relay is required",
+  "invalidRelayFormat": "Invalid relay url format",
+  "networkTypeRequired": "Network is required",
+  "invalidNetworkType": "Invalid network",
+  "relayUrl": "Enter relay url",
+  "save": "Save",
+  "pageNotFound": "This page could not be found",
+  "loading": "Loading...",
+  "hashrateChart": "Hashrate chart",
+  "hashrate": "Hashrate (MH/s)",
+  "previous": "Previous",
+  "next": "Next",
+  "paymentHeight": "EST.Payment",
+  "reset": "reset",
+  "languages": {
+    "en": "English",
+    "ru": "Русский",
+    "cn": "中文"
+  },
+  "footer": {
+    "title": "Fpool - Mining has never been so easy 🐟"
+  }
+}

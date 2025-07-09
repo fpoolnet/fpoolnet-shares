@@ -1,0 +1,43 @@
+{
+  "address": "请输入您的地址...",
+  "invalidAddressFormat": "无效的 Flokicoin 地址格式",
+  "invalidAddress": "无效的 Flokicoin 地址",
+  "addressRequired": "地址是必需的",
+  "time": "时间",
+  "block": "区块",
+  "shares": "份额",
+  "pendingShares": "待定份额",
+  "totalShares": "总份额",
+  "unconfirmedBalance": "未确认余额",
+  "profit": "利润 (FLC)",
+  "fee": "费用 (LOKI)",
+  "relay": "中继",
+  "mainnet": "主网",
+  "regtest": "回归测试网",
+  "testnet": "测试网",
+  "network": "网络",
+  "settings": "设置",
+  "payouts": "支付",
+  "relayUrlRequired": "中继是必需的",
+  "invalidRelayFormat": "无效的中继 URL 格式",
+  "networkTypeRequired": "网络类型是必需的",
+  "invalidNetworkType": "无效的网络",
+  "relayUrl": "输入中继 URL",
+  "save": "保存",
+  "pageNotFound": "无法找到此页面",
+  "loading": "加载中...",
+  "hashrateChart": "算力图表",
+  "hashrate": "算力 (MH/s)",
+  "previous": "上一页",
+  "next": "下一页",
+  "paymentHeight": "预计支付",
+  "reset": "重置",
+  "languages": {
+    "en": "English",
+    "ru": "Русский",
+    "cn": "中文"
+  },
+  "footer": {
+    "title": "Fpool - 矿池从未如此简单 🐟"
+  }
+}
