@@ -1,5 +1,5 @@
 {
-  "name": "fpool-web",
+  "name": "fpoolnet-shares",
   "version": "0.1.1",
   "scripts": {
     "dev": "next dev",
