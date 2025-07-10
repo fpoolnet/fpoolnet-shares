@@ -1,10 +1,9 @@
-# Fpool Web
 
-Fpool web is a tool designed to help you efficiently monitor and manage your mining activities with support for PPLNS.
+Fpool Shares is a UI application designed to track real-time hashrate, payouts, and pending shares on Fpool. With intuitive dashboards and live data, it streamlines mining monitoring and management.
 
 ## Overview
 
-- Track solo mining and PPLNS stats
+- Track pools stats and shares
 - User-friendly dashboard
 - Real-time mining performance monitoring
 - Detailed mining analytics
@@ -21,8 +20,8 @@ Fpool web is a tool designed to help you efficiently monitor and manage your min
 Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/fpoolnet/fpool-web.git
-cd fpool-web
+git clone https://github.com/fpoolnet/fpoolnet-shares.git
+cd fpoolnet-shares
 npm install
 ```
 
