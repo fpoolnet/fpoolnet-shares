@@ -4,7 +4,6 @@ import {
   useSelector as useReduxSelector
 } from 'react-redux';
 import { persistReducer, persistStore } from 'redux-persist';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage';
 import type { ThunkDispatch } from 'redux-thunk';
 import { type Action, configureStore, type ThunkAction } from '@reduxjs/toolkit';
@@ -13,10 +12,9 @@ import { loggerMiddleware } from '@middlewares/LoggerMiddleware';
 import app from '@store/app/AppReducer';
 
 const persistConfig = {
-  key: 'fpool',
+  key: 'shares',
   storage,
-  whitelist: ['address', 'settings'],
-  stateReconciler: autoMergeLevel2
+  whitelist: ['address', 'settings']
 };
 
 const persistedReducer = persistReducer(persistConfig, app);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { nip19 } from 'nostr-tools';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
@@ -49,10 +50,14 @@ const SettingsModal = ({ close }: SettingsModalProps) => {
       ),
     payerPublicKey: Yup.string()
       .required(t('authorPubKeyRequired'))
-      .matches(/^[a-fA-F0-9]{64,}$/, t('invalidPublicKeyFormat')),
+      .test('is-valid-payer-pubkey', t('invalidPublicKeyFormat'), (value: any) => {
+        return !!nip19.NostrTypeGuard.isNPub(value);
+      }),
     workProviderPublicKey: Yup.string()
       .required(t('authorPubKeyRequired'))
-      .matches(/^[a-fA-F0-9]{64,}$/, t('invalidPublicKeyFormat')),
+      .test('is-valid-work-provider-pubkey', t('invalidPublicKeyFormat'), (value: any) => {
+        return !!nip19.NostrTypeGuard.isNPub(value);
+      }),
     network: Yup.string()
       .oneOf(
         networkOptions.map((option) => option.value),
@@ -70,14 +75,19 @@ const SettingsModal = ({ close }: SettingsModalProps) => {
     resolver: yupResolver(validationSchema),
     defaultValues: {
       relay: settings.relay || '',
-      payerPublicKey: settings.payerPublicKey || '',
-      workProviderPublicKey: settings.workProviderPublicKey || '',
+      payerPublicKey: nip19.npubEncode(settings.payerPublicKey) || '',
+      workProviderPublicKey: nip19.npubEncode(settings.workProviderPublicKey) || '',
       network: settings.network || ''
     }
   });
 
   const onSubmit = async (data: any) => {
     try {
+      data = {
+        ...data,
+        payerPublicKey: nip19.decode(data.payerPublicKey).data,
+        workProviderPublicKey: nip19.decode(data.workProviderPublicKey).data
+      };
       await dispatch(changeRelay(data));
     } catch (err: any) {
       console.error(err);

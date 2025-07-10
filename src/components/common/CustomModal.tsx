@@ -23,7 +23,7 @@ const CustomModal = (props: CustomModalProps): JSX.Element => {
 
     if (size === 'small') {
       return {
-        width: 500
+        width: 600
       };
     }
 
