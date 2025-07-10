@@ -16,3 +16,5 @@ export const getPayoutsCount = (state: ReduxState) => state.payouts.length;
 export const getIsHashratesLoading = (state: ReduxState) => state.isHashrateLoading;
 export const getIsSharesLoading = (state: ReduxState) => state.isSharesLoading;
 export const getIsPayoutsLoading = (state: ReduxState) => state.isPayoutsLoading;
+export const getSkeleton = (state: ReduxState) => state.skeleton;
+export const getCloseSettings = (state: ReduxState) => state.closeSettings;

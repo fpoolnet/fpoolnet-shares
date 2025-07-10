@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import HashrateChart from '@components/charts/HashrateChart';
 import PayoutsTable from '@components/tables/payouts/PayoutsTable';
 import SharesTable from '@components/tables/shares/SharesTable';
 import { useNotification } from '@hooks/UseNotificationHook';
 import { addAddress, clearPayouts } from '@store/app/AppReducer';
-import { getSettings } from '@store/app/AppSelectors';
+import { getSkeleton, getSettings } from '@store/app/AppSelectors';
 import { connectRelay, getHashrates, getPayouts, getShares } from '@store/app/AppThunks';
 import { useDispatch, useSelector } from '@store/store';
 import { validateAddress } from '@utils/Utils';
@@ -18,6 +18,7 @@ const AddressPage = () => {
   const { t } = useTranslation();
   const { addr } = router.query;
   const settings = useSelector(getSettings);
+  const enableSkeleton = useSelector(getSkeleton);
   const { showError } = useNotification();
 
   const hasConnectedRelayRef = useRef(false);
@@ -60,9 +61,56 @@ const AddressPage = () => {
         marginBottom: '50px',
         justifyContent: 'center'
       }}>
-      <HashrateChart />
-      <SharesTable />
-      <PayoutsTable />
+      {enableSkeleton ? (
+        <>
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            sx={{ height: 50, width: '100%', marginBottom: 1, bgcolor: 'grey.200' }}
+          />
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            sx={{ height: 200, width: '100%', marginBottom: 3, bgcolor: 'grey.200' }}
+          />
+        </>
+      ) : (
+        <HashrateChart />
+      )}
+
+      {enableSkeleton ? (
+        <>
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            sx={{ height: 50, width: '100%', marginBottom: 1, bgcolor: 'grey.200' }}
+          />
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            sx={{ height: 200, width: '100%', marginBottom: 3, bgcolor: 'grey.200' }}
+          />
+        </>
+      ) : (
+        <SharesTable />
+      )}
+
+      {enableSkeleton ? (
+        <>
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            sx={{ height: 50, width: '100%', marginBottom: 1, bgcolor: 'grey.200' }}
+          />
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            sx={{ height: 200, width: '100%', marginBottom: 1, bgcolor: 'grey.200' }}
+          />
+        </>
+      ) : (
+        <PayoutsTable />
+      )}
     </Box>
   );
 };

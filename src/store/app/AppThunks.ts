@@ -6,25 +6,36 @@ import { beautify } from '@utils/beautifierUtils';
 import {
   addHashrate,
   addPayout,
+  addPayouts,
   addShare,
   setHashratesLoader,
   setPayoutEose,
   setPayoutLoader,
-  setShareLoader
+  setShareLoader,
+  setSkeleton
 } from './AppReducer';
+import { IPayoutEvent } from '@objects/interfaces/IPayoutEvent';
 
 export const getPayouts = createAppAsyncThunk(
   'relay/getPayouts',
   async (address: string, { rejectWithValue, dispatch }) => {
     try {
+      const eose = false;
+      let events: IPayoutEvent[] = [];
       const relayService: any = Container.get(RelayService);
       relayService.subscribePayouts(address, {
         onevent: (event: any) => {
           const payoutEvent = beautify(event);
-          dispatch(addPayout(payoutEvent));
+          if (eose) {
+            dispatch(addPayout(payoutEvent));
+          } else {
+            events.push(payoutEvent);
+          }
         },
         oneose: () => {
           dispatch(setPayoutEose(true));
+          dispatch(addPayouts(events));
+          events = [];
           setTimeout(() => {
             dispatch(setPayoutLoader(false));
           }, 500);
@@ -74,6 +85,7 @@ export const getShares = createAppAsyncThunk(
         }
       });
     } catch (err: any) {
+      
       return rejectWithValue({
         message: err?.message,
         code: err.code,
@@ -145,12 +157,13 @@ export const stopHashrates = createAppAsyncThunk(
 
 export const connectRelay = createAppAsyncThunk(
   'relay/connectRelay',
-  async (settings: ISettings, { rejectWithValue }) => {
+  async (settings: ISettings, { rejectWithValue, dispatch }) => {
     try {
       const relayService: any = Container.get(RelayService);
       await relayService.connectRelay(settings.relay);
       return settings;
     } catch (err: any) {
+      dispatch(setSkeleton(true));
       return rejectWithValue({
         message: err?.message || err,
         code: err.code,
@@ -162,12 +175,13 @@ export const connectRelay = createAppAsyncThunk(
 
 export const changeRelay = createAppAsyncThunk(
   'relay/changeRelay',
-  async (settings: ISettings, { rejectWithValue }) => {
+  async (settings: ISettings, { rejectWithValue, dispatch }) => {
     try {
       const relayService: any = Container.get(RelayService);
       await relayService.connectRelay(settings.relay);
       return settings;
     } catch (err: any) {
+      dispatch(setSkeleton(true));
       return rejectWithValue({
         message: err?.message || err,
         code: err.code,

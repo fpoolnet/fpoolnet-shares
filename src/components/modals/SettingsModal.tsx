@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { useNotification } from '@hooks/UseNotificationHook';
 import { NetworkTypeType } from '@objects/Enums';
-import { getSettings } from '@store/app/AppSelectors';
+import { getAddress, getCloseSettings, getSettings } from '@store/app/AppSelectors';
 import { changeRelay } from '@store/app/AppThunks';
 import { useDispatch, useSelector } from '@store/store';
 import { PRIMARY_BLACK } from '@styles/colors';
@@ -29,6 +29,8 @@ export interface SettingsModalProps {
 const SettingsModal = ({ close }: SettingsModalProps) => {
   const { t } = useTranslation();
   const settings = useSelector(getSettings);
+  const address = useSelector(getAddress);
+  const closeSetting = useSelector(getCloseSettings);
   const dispatch = useDispatch();
   const { showError } = useNotification();
 
@@ -77,7 +79,6 @@ const SettingsModal = ({ close }: SettingsModalProps) => {
   const onSubmit = async (data: any) => {
     try {
       await dispatch(changeRelay(data));
-      if (close) close();
     } catch (err: any) {
       console.error(err);
       showError({
@@ -89,6 +90,12 @@ const SettingsModal = ({ close }: SettingsModalProps) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (closeSetting && close) {
+      close();
+    }
+  }, [closeSetting]);
 
   return (
     <Box

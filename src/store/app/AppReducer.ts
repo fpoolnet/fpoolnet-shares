@@ -31,6 +31,9 @@ export interface AppState {
   isSharesLoading: boolean;
   isPayoutsLoading: boolean;
   payoutsEose: boolean;
+  sharesEose: boolean;
+  skeleton: boolean;
+  closeSettings: boolean;
   error?: ICustomError;
 }
 
@@ -50,6 +53,9 @@ export const initialState: AppState = {
   isSharesLoading: false,
   isPayoutsLoading: false,
   payoutsEose: false,
+  sharesEose: false,
+  skeleton: false,
+  closeSettings: false,
   error: undefined
 };
 
@@ -59,6 +65,7 @@ export const slice = createSlice({
   reducers: {
     addAddress: (state: AppState, action: PayloadAction<string>) => {
       state.address = action.payload;
+      state.closeSettings = false;
     },
     clearAddress: (state: AppState) => {
       state.address = undefined;
@@ -82,10 +89,20 @@ export const slice = createSlice({
       state.isPayoutsLoading = action.payload;
     },
     setPayoutEose: (state: AppState, action: PayloadAction<boolean>) => {
-      state.isPayoutsLoading = action.payload;
+      state.payoutsEose = action.payload;
+    },
+    setShareEose: (state: AppState, action: PayloadAction<boolean>) => {
+      state.sharesEose = action.payload;
     },
     setSettings: (state: AppState, action: PayloadAction<ISettings>) => {
       state.settings = action.payload;
+    },
+    setSkeleton: (state: AppState, action: PayloadAction<boolean>) => {
+      state.skeleton = action.payload;
+    },
+    addPayouts: (state: AppState, action: PayloadAction<IPayoutEvent[]>) => {
+      state.isPayoutsLoading = false;
+      state.payouts = action.payload;
     },
     addPayout: (state: AppState, action: PayloadAction<IPayoutEvent>) => {
       const event = action.payload;
@@ -101,7 +118,9 @@ export const slice = createSlice({
       }
     },
     addShare: (state: AppState, action: PayloadAction<IShareEvent>) => {
-      state.shares = [action.payload, ...state.shares];
+      state.shares = state.sharesEose
+        ? [action.payload, ...state.shares]
+        : [...state.shares, action.payload];
     },
     addHashrate: (state: AppState, action: PayloadAction<IHashrateEvent>) => {
       state.hashrates = [...state.hashrates, action.payload];
@@ -164,19 +183,27 @@ export const slice = createSlice({
         state.isHashrateLoading = false;
       })
       .addCase(changeRelay.pending, (state) => {
+        state.skeleton = false;
         state.error = undefined;
         state.payouts = [];
+        state.shares = [];
+        state.hashrates = [];
         state.address = undefined;
+        state.closeSettings = false;
       })
       .addCase(changeRelay.fulfilled, (state, action) => {
         state.settings = action.payload;
+        state.skeleton = true;
+        state.closeSettings = true;
       })
       .addCase(changeRelay.rejected, (state, action) => {
         state.error = action.payload;
         state.isPayoutsLoading = false;
         state.isSharesLoading = false;
+        state.closeSettings = false;
       })
       .addCase(connectRelay.pending, (state) => {
+        state.skeleton = false;
         state.error = undefined;
         state.payouts = [];
         state.address = undefined;
@@ -202,7 +229,9 @@ export const {
   setPayoutLoader,
   setShareLoader,
   setPayoutEose,
-  setSettings
+  setSettings,
+  addPayouts,
+  setSkeleton
 } = slice.actions;
 
 export default appReducer;

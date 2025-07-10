@@ -12,7 +12,7 @@ import {
   StyledAddressInputBase
 } from '@components/styled/AddressInput';
 import { useNotification } from '@hooks/UseNotificationHook';
-import { addAddress, clearAddress } from '@store/app/AppReducer';
+import { addAddress, clearAddress, setSkeleton } from '@store/app/AppReducer';
 import { getAddress, getSettings } from '@store/app/AppSelectors';
 import { getHashrates, getPayouts, getShares } from '@store/app/AppThunks';
 import { useDispatch, useSelector } from '@store/store';
@@ -72,6 +72,7 @@ const Connect = () => {
   const handleDisplayInput = () => {
     setInputValue('');
     setInputVisible(true);
+    dispatch(setSkeleton(true));
     setTimeout(() => {
       setFocus('address');
     }, 500);
@@ -118,6 +119,7 @@ const Connect = () => {
                 onBlur: () => {
                   if (address) {
                     setInputVisible(false);
+                    dispatch(setSkeleton(false));
                   }
                 }
               })}

@@ -72,6 +72,7 @@ export class RelayService {
       {
         kinds: [35502],
         authors: [SHARES_PUBLIC_KEY],
+        since: getTimeBeforeDaysInSeconds(1),
         limit: 500,
         [`#a`]: [address]
       }
