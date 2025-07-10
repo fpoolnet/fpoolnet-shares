@@ -66,6 +66,7 @@ export const slice = createSlice({
     addAddress: (state: AppState, action: PayloadAction<string>) => {
       state.address = action.payload;
       state.closeSettings = false;
+      state.skeleton = false;
     },
     clearAddress: (state: AppState) => {
       state.address = undefined;
