@@ -85,15 +85,27 @@ export const addRandomNumber = (number: number): number => {
 
 export const formatHashrate = (hpsStr: any) => {
   const hps = BigInt(Math.round(Number(hpsStr)));
+
   const units = ['H/s', 'kH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s'];
 
+  // figure out which unit to use
   let unitIndex = 0;
-  let value = hps;
-
-  while (value >= 1000n && unitIndex < units.length - 1) {
-    value /= 1000n;
+  let tmp = hps;
+  while (tmp >= 1000n && unitIndex < units.length - 1) {
+    tmp /= 1000n;
     unitIndex++;
   }
 
-  return `${value} ${units[unitIndex]}`;
+  // compute a scaled value * 100 (for two decimal places)
+  const scale = 1000n ** BigInt(unitIndex);
+  const scaledTimes100 = (hps * 100n) / scale;
+
+  // split into integer and fractional parts
+  const integerPart = scaledTimes100 / 100n;
+  const fractionPart = scaledTimes100 % 100n;
+
+  // pad fractional part to two digits
+  const fracStr = fractionPart.toString().padStart(2, '0');
+
+  return `${integerPart}.${fracStr} ${units[unitIndex]}`;
 };
