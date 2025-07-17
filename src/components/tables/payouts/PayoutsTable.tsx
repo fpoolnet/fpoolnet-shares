@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Chip } from '@mui/material';
-import Box from '@mui/material/Box';
 import CustomTable from '@components/common/CustomTable';
 import CustomTooltip from '@components/common/CustomTooltip';
 import ProgressLoader from '@components/common/ProgressLoader';
 import { SectionHeader } from '@components/styled/SectionHeader';
 import { StyledCard } from '@components/styled/StyledCard';
+import { Chip } from '@mui/material';
+import Box from '@mui/material/Box';
 import {
   getAddress,
   getIsPayoutsLoading,
@@ -16,6 +14,8 @@ import {
 } from '@store/app/AppSelectors';
 import { useSelector } from '@store/store';
 import { lokiToFlc } from '@utils/Utils';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import payoutsColumns from './PayoutsColumns';
 
 const PayoutsTable = () => {
@@ -75,6 +75,11 @@ const PayoutsTable = () => {
             rows={dataTable}
             rowCount={payoutsCount}
             isLoading={isLoading}
+            initialState={{
+              sorting: {
+                sortModel: [{ field: 'blockHeight', sort: 'desc' }]
+              }
+            }}
           />
         )}
       </Box>

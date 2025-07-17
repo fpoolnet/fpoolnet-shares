@@ -21,6 +21,7 @@ interface CustomTableProps {
   filters?: boolean;
   autoSelectAll?: boolean;
   defaultPageSize?: number;
+  initialState?: any;
   onRowAdd?: () => void;
   onRowEdit?: (id: string) => void;
   onRowDelete?: (id: string) => void;
@@ -46,6 +47,7 @@ const CustomTable = (props: CustomTableProps) => {
     autoSelectAll,
     defaultPageSize,
     isLoading,
+    initialState,
     onRowEdit,
     onRowAdd,
     onRowDelete,
@@ -130,7 +132,10 @@ const CustomTable = (props: CustomTableProps) => {
           disableColumnMenu={!filters}
           pageSizeOptions={[10, 25, 50, 100]}
           rowSelectionModel={selectionModel}
-          initialState={{
+          initialState={initialState ? {
+            density: 'compact',
+            ...initialState
+          } : {
             density: 'compact'
           }}
           onRowSelectionModelChange={(selection: any) => {

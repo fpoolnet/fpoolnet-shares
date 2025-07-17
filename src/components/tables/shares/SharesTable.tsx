@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import Box from '@mui/material/Box';
 import CustomTable from '@components/common/CustomTable';
 import ProgressLoader from '@components/common/ProgressLoader';
 import { SectionHeader } from '@components/styled/SectionHeader';
 import { StyledCard } from '@components/styled/StyledCard';
+import Box from '@mui/material/Box';
 import { getAddress, getIsSharesLoading, getShares, getSharesCount } from '@store/app/AppSelectors';
 import { useSelector } from '@store/store';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import sharesColumns from './SharesColumns';
 
 const SharesTable = () => {
@@ -46,6 +46,11 @@ const SharesTable = () => {
               rowCount={sharesCount}
               isLoading={isLoading}
               defaultPageSize={10}
+              initialState={{
+                sorting: {
+                  sortModel: [{ field: 'blockHeight', sort: 'desc' }]
+                }
+              }}
             />
           </Box>
         )}

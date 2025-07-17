@@ -104,6 +104,9 @@ export const slice = createSlice({
     addPayouts: (state: AppState, action: PayloadAction<IPayoutEvent[]>) => {
       state.isPayoutsLoading = false;
       state.payouts = action.payload;
+      action.payload.forEach(event=>{
+        if (!event.confirmedTx) state.unconfirmedBalance += event.amount;
+      })
     },
     addPayout: (state: AppState, action: PayloadAction<IPayoutEvent>) => {
       const event = action.payload;
