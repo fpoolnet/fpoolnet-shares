@@ -3,29 +3,17 @@ import ProgressLoader from '@components/common/ProgressLoader';
 import { SectionHeader } from '@components/styled/SectionHeader';
 import { StyledCard } from '@components/styled/StyledCard';
 import Box from '@mui/material/Box';
-import { getAddress, getIsSharesLoading, getShares, getSharesCount } from '@store/app/AppSelectors';
+import { getAddress, getIsSharesLoading, getShares } from '@store/app/AppSelectors';
 import { useSelector } from '@store/store';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import sharesColumns from './SharesColumns';
 
 const SharesTable = () => {
   const { t } = useTranslation();
-  const columns = sharesColumns;
-  const sharesCount = useSelector(getSharesCount);
+  const columns = sharesColumns();
   const isLoading = useSelector(getIsSharesLoading);
   const shares = useSelector(getShares);
   const address = useSelector(getAddress);
-
-  const [dataTable, setDataTable] = useState<any>([]);
-
-  useEffect(() => {
-    if (shares?.length && !isLoading) {
-      setDataTable(shares);
-    } else {
-      setDataTable([]);
-    }
-  }, [shares, isLoading]);
 
   return (
     <StyledCard>
@@ -33,23 +21,22 @@ const SharesTable = () => {
         component="section"
         sx={{
           p: 2,
-          minHeight: sharesCount ? 200 : 100,
+          minHeight: shares.length ? 200 : 100,
           justifyContent: 'center'
         }}>
         <SectionHeader>{t('pendingShares')}</SectionHeader>
         {isLoading && address && <ProgressLoader value={shares.length} />}
         {!isLoading && address && (
-          <Box sx={{ height: sharesCount ? 'auto' : 100 }}>
+          <Box sx={{ height: shares.length ? 'auto' : 100 }}>
             <CustomTable
               columns={columns}
-              rows={dataTable}
-              rowCount={sharesCount}
+              rows={shares}
               isLoading={isLoading}
-              defaultPageSize={10}
               initialState={{
                 sorting: {
                   sortModel: [{ field: 'blockHeight', sort: 'desc' }]
-                }
+                },
+                pagination: { paginationModel: { pageSize: 10 } }
               }}
             />
           </Box>

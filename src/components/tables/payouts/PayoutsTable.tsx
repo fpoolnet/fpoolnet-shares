@@ -9,33 +9,20 @@ import {
   getAddress,
   getIsPayoutsLoading,
   getPayouts,
-  getPayoutsCount,
   getUnconfirmedBalance
 } from '@store/app/AppSelectors';
 import { useSelector } from '@store/store';
 import { lokiToFlc } from '@utils/Utils';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import payoutsColumns from './PayoutsColumns';
 
 const PayoutsTable = () => {
   const { t } = useTranslation();
-  const columns = payoutsColumns;
-  const payoutsCount = useSelector(getPayoutsCount);
+  const columns = payoutsColumns();
   const isLoading = useSelector(getIsPayoutsLoading);
   const payouts = useSelector(getPayouts);
   const address = useSelector(getAddress);
   const unconfirmedBalance = useSelector(getUnconfirmedBalance);
-
-  const [dataTable, setDataTable] = useState<any>([]);
-
-  useEffect(() => {
-    if (payouts?.length && !isLoading) {
-      setDataTable(payouts);
-    } else {
-      setDataTable([]);
-    }
-  }, [payouts, isLoading]);
 
   return (
     <StyledCard>
@@ -72,10 +59,10 @@ const PayoutsTable = () => {
         {!isLoading && address && (
           <CustomTable
             columns={columns}
-            rows={dataTable}
-            rowCount={payoutsCount}
+            rows={payouts}
             isLoading={isLoading}
             initialState={{
+              pagination: { paginationModel: { pageSize: 50 } },
               sorting: {
                 sortModel: [{ field: 'blockHeight', sort: 'desc' }]
               }
