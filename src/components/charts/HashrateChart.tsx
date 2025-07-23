@@ -27,7 +27,7 @@ const HashrateChart = () => {
         }))
         .sort((a: { time: number; value: number }, b: { time: number; value: number }) => a.time - b.time);
 
-      setDataPoints(calculateSMA(lineDataPoints, 14));
+      setDataPoints(calculateSMA(lineDataPoints, 50));
     } else {
       setDataPoints([]);
     }
