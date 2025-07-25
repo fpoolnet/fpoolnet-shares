@@ -25,7 +25,7 @@ tsconfig.tsbuildinfo
 # 🧠 IDEs / Tools
 # ------------------------------------
 .idea/
-#.vscode/
+.vscode/
 *.swp
 *.swo
 

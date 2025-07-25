@@ -2,12 +2,15 @@ import { Container } from 'typedi';
 import { ISettings } from '@objects/interfaces/ISettings';
 import { RelayService } from '@services/api/RelayService';
 import { createAppAsyncThunk } from '@store/createAppAsyncThunk';
+import { IShareEvent } from '@objects/interfaces/IShareEvent';
 import { beautify } from '@utils/beautifierUtils';
 import {
   addHashrate,
   addPayout,
   addPayouts,
   addShare,
+  addShares,
+  setShareEose,
   setHashratesLoader,
   setPayoutEose,
   setPayoutLoader,
@@ -51,6 +54,42 @@ export const getPayouts = createAppAsyncThunk(
   }
 );
 
+export const getShares = createAppAsyncThunk(
+  'relay/getShares',
+  async (address: string, { rejectWithValue, dispatch }) => {
+    try {
+      const eose = false;
+      let events: IShareEvent[] = [];
+      const relayService: any = Container.get(RelayService);
+      relayService.subscribeShares(address, {
+        onevent: (event: any) => {
+          const shareEvent = beautify(event);
+          if (eose) {
+            dispatch(addShare(shareEvent));
+          } else {
+            events.push(shareEvent);
+          }
+        },
+        oneose: () => {
+          dispatch(setShareEose(true));
+          dispatch(addShares(events));
+          events = [];
+          setTimeout(() => {
+            dispatch(setShareLoader(false));
+          }, 500);
+        }
+      });
+    } catch (err: any) {
+      
+      return rejectWithValue({
+        message: err?.message,
+        code: err.code,
+        status: err.status
+      });
+    }
+  }
+);
+
 export const stopPayouts = createAppAsyncThunk(
   'relay/stopPayouts',
   async (_, { rejectWithValue }) => {
@@ -68,32 +107,7 @@ export const stopPayouts = createAppAsyncThunk(
   }
 );
 
-export const getShares = createAppAsyncThunk(
-  'relay/getShares',
-  async (address: string, { rejectWithValue, dispatch }) => {
-    try {
-      const relayService: any = Container.get(RelayService);
-      relayService.subscribeShares(address, {
-        onevent: (event: any) => {
-          const shareEvent = beautify(event);
-          dispatch(addShare(shareEvent));
-        },
-        oneose: () => {
-          setTimeout(() => {
-            dispatch(setShareLoader(false));
-          }, 500);
-        }
-      });
-    } catch (err: any) {
-      
-      return rejectWithValue({
-        message: err?.message,
-        code: err.code,
-        status: err.status
-      });
-    }
-  }
-);
+
 
 export const stopShares = createAppAsyncThunk(
   'relay/stopShares',

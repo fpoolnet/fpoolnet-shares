@@ -126,6 +126,10 @@ export const slice = createSlice({
         ? [action.payload, ...state.shares]
         : [...state.shares, action.payload];
     },
+    addShares: (state: AppState, action: PayloadAction<IShareEvent[]>) => {
+      state.shares = action.payload
+      
+    },
     addHashrate: (state: AppState, action: PayloadAction<IHashrateEvent>) => {
       state.hashrates = [...state.hashrates, action.payload];
     }
@@ -145,6 +149,7 @@ export const slice = createSlice({
         state.isPayoutsLoading = false;
       })
       .addCase(getShares.pending, (state) => {
+        state.sharesEose = false
         state.shares = [];
         state.isSharesLoading = true;
       })
@@ -233,9 +238,11 @@ export const {
   setPayoutLoader,
   setShareLoader,
   setPayoutEose,
+  setShareEose,
   setSettings,
   addPayouts,
-  setSkeleton
+  setSkeleton,
+  addShares
 } = slice.actions;
 
 export default appReducer;

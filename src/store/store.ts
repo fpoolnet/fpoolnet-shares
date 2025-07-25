@@ -8,7 +8,6 @@ import storage from 'redux-persist/lib/storage';
 import type { ThunkDispatch } from 'redux-thunk';
 import { type Action, configureStore, type ThunkAction } from '@reduxjs/toolkit';
 import { errorMiddleware } from '@middlewares/ErrorMiddleware';
-import { loggerMiddleware } from '@middlewares/LoggerMiddleware';
 import app from '@store/app/AppReducer';
 
 const persistConfig = {
@@ -27,7 +26,7 @@ export const AppStore = configureStore({
         ignoredActions: ['persist/PERSIST'],
         ignoredPaths: ['register']
       }
-    }).concat(loggerMiddleware, errorMiddleware)
+    }).concat(errorMiddleware)
 });
 
 export type ReduxState = ReturnType<typeof AppStore.getState>;
