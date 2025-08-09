@@ -20,7 +20,7 @@ export class RelayService {
       {
         kinds: [35505],
         authors: [PAYOUTS_PUBLIC_KEY],
-        since: getTimeBeforeDaysInSeconds(5),
+        since: getTimeBeforeDaysInSeconds(2),
         [`#a`]: [address]
       },
       {

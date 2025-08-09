@@ -22,7 +22,6 @@ export class NostrClient {
   }
 
   subscribeEvent(filters: Filter[], subscriptionParams: SubscriptionParams) {
-    const subscription = this.relay.subscribe(filters, subscriptionParams);
-    return subscription;
+    return this.relay.subscribe(filters, subscriptionParams);
   }
 }

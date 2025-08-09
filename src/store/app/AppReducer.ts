@@ -30,8 +30,6 @@ export interface AppState {
   isHashrateLoading: boolean;
   isSharesLoading: boolean;
   isPayoutsLoading: boolean;
-  payoutsEose: boolean;
-  sharesEose: boolean;
   skeleton: boolean;
   closeSettings: boolean;
   error?: ICustomError;
@@ -52,8 +50,6 @@ export const initialState: AppState = {
   isHashrateLoading: false,
   isSharesLoading: false,
   isPayoutsLoading: false,
-  payoutsEose: false,
-  sharesEose: false,
   skeleton: false,
   closeSettings: false,
   error: undefined
@@ -89,24 +85,11 @@ export const slice = createSlice({
     setPayoutLoader: (state: AppState, action: PayloadAction<boolean>) => {
       state.isPayoutsLoading = action.payload;
     },
-    setPayoutEose: (state: AppState, action: PayloadAction<boolean>) => {
-      state.payoutsEose = action.payload;
-    },
-    setShareEose: (state: AppState, action: PayloadAction<boolean>) => {
-      state.sharesEose = action.payload;
-    },
     setSettings: (state: AppState, action: PayloadAction<ISettings>) => {
       state.settings = action.payload;
     },
     setSkeleton: (state: AppState, action: PayloadAction<boolean>) => {
       state.skeleton = action.payload;
-    },
-    addPayouts: (state: AppState, action: PayloadAction<IPayoutEvent[]>) => {
-      state.isPayoutsLoading = false;
-      state.payouts = action.payload;
-      action.payload.forEach(event=>{
-        if (!event.confirmedTx) state.unconfirmedBalance += event.amount;
-      })
     },
     addPayout: (state: AppState, action: PayloadAction<IPayoutEvent>) => {
       const event = action.payload;
@@ -118,26 +101,19 @@ export const slice = createSlice({
         state.payouts[eventIndex] = event;
       } else {
         if (!event.confirmedTx) state.unconfirmedBalance += event.amount;
-        state.payouts = state.payoutsEose ? [event, ...state.payouts] : [...state.payouts, event];
+        state.payouts = [...state.payouts, event];
       }
     },
     addShare: (state: AppState, action: PayloadAction<IShareEvent>) => {
-      state.shares = state.sharesEose
-        ? [action.payload, ...state.shares]
-        : [...state.shares, action.payload];
-    },
-    addShares: (state: AppState, action: PayloadAction<IShareEvent[]>) => {
-      state.shares = action.payload
-      
+      state.shares = [...state.shares, action.payload];
     },
     addHashrate: (state: AppState, action: PayloadAction<IHashrateEvent>) => {
       state.hashrates = [...state.hashrates, action.payload];
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getPayouts.pending, (state) => {
-        state.payoutsEose = false;
         state.payouts = [];
         state.isPayoutsLoading = true;
       })
@@ -149,7 +125,6 @@ export const slice = createSlice({
         state.isPayoutsLoading = false;
       })
       .addCase(getShares.pending, (state) => {
-        state.sharesEose = false
         state.shares = [];
         state.isSharesLoading = true;
       })
@@ -237,12 +212,8 @@ export const {
   setHashratesLoader,
   setPayoutLoader,
   setShareLoader,
-  setPayoutEose,
-  setShareEose,
   setSettings,
-  addPayouts,
-  setSkeleton,
-  addShares
+  setSkeleton
 } = slice.actions;
 
 export default appReducer;

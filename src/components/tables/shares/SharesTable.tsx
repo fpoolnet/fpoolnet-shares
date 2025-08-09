@@ -3,7 +3,7 @@ import ProgressLoader from '@components/common/ProgressLoader';
 import { SectionHeader } from '@components/styled/SectionHeader';
 import { StyledCard } from '@components/styled/StyledCard';
 import Box from '@mui/material/Box';
-import { getAddress, getIsSharesLoading, getShares } from '@store/app/AppSelectors';
+import { getIsSharesLoading, getShares } from '@store/app/AppSelectors';
 import { useSelector } from '@store/store';
 import { useTranslation } from 'react-i18next';
 import sharesColumns from './SharesColumns';
@@ -13,7 +13,6 @@ const SharesTable = () => {
   const columns = sharesColumns();
   const isLoading = useSelector(getIsSharesLoading);
   const shares = useSelector(getShares);
-  const address = useSelector(getAddress);
 
   return (
     <StyledCard>
@@ -25,13 +24,11 @@ const SharesTable = () => {
           justifyContent: 'center'
         }}>
         <SectionHeader>{t('pendingShares')}</SectionHeader>
-        {isLoading && address && <ProgressLoader value={shares.length} />}
-        {!isLoading && address && (
+        {isLoading ? (<ProgressLoader value={shares.length} />): (
           <Box sx={{ height: shares.length ? 'auto' : 100 }}>
             <CustomTable
               columns={columns}
               rows={shares}
-              isLoading={isLoading}
               initialState={{
                 sorting: {
                   sortModel: [{ field: 'blockHeight', sort: 'desc' }]

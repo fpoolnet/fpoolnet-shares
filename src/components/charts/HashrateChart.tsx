@@ -16,22 +16,15 @@ const HashrateChart = () => {
   const isLoading = useSelector(getIsHashratesLoading);
   const address = useSelector(getAddress);
 
-  const [dataPoints, setDataPoints] = useState<any>([]);
-
-  useEffect(() => {
-    if (hashrates.length && !isLoading) {
-      const lineDataPoints = hashrates
+  const getDatapoints = (events: any[]) :any[] => {
+    const lineDataPoints = events
         .map((event: any) => ({
           time: event.timestamp,
           value: event.hashrate
         }))
         .sort((a: { time: number; value: number }, b: { time: number; value: number }) => a.time - b.time);
-
-      setDataPoints(calculateSMA(lineDataPoints, 50));
-    } else {
-      setDataPoints([]);
-    }
-  }, [hashrates, isLoading]);
+        return calculateSMA(lineDataPoints, 50)
+  }
 
   return (
     <StyledCard>
@@ -47,9 +40,9 @@ const HashrateChart = () => {
         </SectionHeader>
         {isLoading && address && <ProgressLoader value={hashrates.length} />}
         {!isLoading &&
-          (dataPoints.length > 0 && address ? (
+          (hashrates.length > 0 && address ? (
             <CustomChart
-              dataPoints={dataPoints}
+              dataPoints={getDatapoints(hashrates)}
               height={300}
               lineColor={PRIMARY_BLUE}
               valueFormatter={formatHashrate}

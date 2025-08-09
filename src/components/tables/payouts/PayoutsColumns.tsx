@@ -15,7 +15,7 @@ const payoutsColumns = () => {
       minWidth: 150,
       headerClassName: 'text-blue text-uppercase',
       cellClassName: 'text-bold',
-      renderCell: (params: any) => dayjs(params.value).format('MM/DD/YYYY h:mm A')
+      valueFormatter: (params: any) => dayjs(params.value).format('MM/DD/YYYY h:mm A')
     },
     {
       headerName: t('block'),

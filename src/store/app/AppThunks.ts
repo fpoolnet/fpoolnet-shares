@@ -2,48 +2,41 @@ import { Container } from 'typedi';
 import { ISettings } from '@objects/interfaces/ISettings';
 import { RelayService } from '@services/api/RelayService';
 import { createAppAsyncThunk } from '@store/createAppAsyncThunk';
-import { IShareEvent } from '@objects/interfaces/IShareEvent';
 import { beautify } from '@utils/beautifierUtils';
 import {
   addHashrate,
   addPayout,
-  addPayouts,
   addShare,
-  addShares,
-  setShareEose,
   setHashratesLoader,
-  setPayoutEose,
   setPayoutLoader,
   setShareLoader,
   setSkeleton
 } from './AppReducer';
-import { IPayoutEvent } from '@objects/interfaces/IPayoutEvent';
 
 export const getPayouts = createAppAsyncThunk(
   'relay/getPayouts',
   async (address: string, { rejectWithValue, dispatch }) => {
     try {
-      const eose = false;
-      let events: IPayoutEvent[] = [];
       const relayService: any = Container.get(RelayService);
+      let timeoutId: NodeJS.Timeout;
+      
+      const resetTimeout = () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(() => {
+          dispatch(setPayoutLoader(false));
+        }, 2000);
+      };
+
       relayService.subscribePayouts(address, {
         onevent: (event: any) => {
           const payoutEvent = beautify(event);
-          if (eose) {
-            dispatch(addPayout(payoutEvent));
-          } else {
-            events.push(payoutEvent);
-          }
-        },
-        oneose: () => {
-          dispatch(setPayoutEose(true));
-          dispatch(addPayouts(events));
-          events = [];
-          setTimeout(() => {
-            dispatch(setPayoutLoader(false));
-          }, 500);
+          dispatch(addPayout(payoutEvent));
+          resetTimeout();
         }
       });
+
     } catch (err: any) {
       return rejectWithValue({
         message: err?.message,
@@ -58,29 +51,52 @@ export const getShares = createAppAsyncThunk(
   'relay/getShares',
   async (address: string, { rejectWithValue, dispatch }) => {
     try {
-      const eose = false;
-      let events: IShareEvent[] = [];
       const relayService: any = Container.get(RelayService);
+      let timeoutId: NodeJS.Timeout;
+      
+      const resetTimeout = () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(() => {
+          dispatch(setShareLoader(false));
+        }, 2000);
+      };
+
       relayService.subscribeShares(address, {
         onevent: (event: any) => {
           const shareEvent = beautify(event);
-          if (eose) {
-            dispatch(addShare(shareEvent));
-          } else {
-            events.push(shareEvent);
-          }
+          dispatch(addShare(shareEvent));
+          resetTimeout();
+        }
+      });
+
+    } catch (err: any) {
+      return rejectWithValue({
+        message: err?.message,
+        code: err.code,
+        status: err.status
+      });
+    }
+  }
+);
+
+
+export const getHashrates = createAppAsyncThunk(
+  'relay/getHashrates',
+  async (address: string, { rejectWithValue, dispatch }) => {
+    try {
+      const relayService: any = Container.get(RelayService);
+      relayService.subscribeHashrates(address, {
+        onevent: (event: any) => {
+          const hashrateEvent = beautify(event);
+          dispatch(addHashrate(hashrateEvent));
         },
         oneose: () => {
-          dispatch(setShareEose(true));
-          dispatch(addShares(events));
-          events = [];
-          setTimeout(() => {
-            dispatch(setShareLoader(false));
-          }, 500);
+          dispatch(setHashratesLoader(false));
         }
       });
     } catch (err: any) {
-      
       return rejectWithValue({
         message: err?.message,
         code: err.code,
@@ -126,31 +142,7 @@ export const stopShares = createAppAsyncThunk(
   }
 );
 
-export const getHashrates = createAppAsyncThunk(
-  'relay/getHashrates',
-  async (address: string, { rejectWithValue, dispatch }) => {
-    try {
-      const relayService: any = Container.get(RelayService);
-      relayService.subscribeHashrates(address, {
-        onevent: (event: any) => {
-          const hashrateEvent = beautify(event);
-          dispatch(addHashrate(hashrateEvent));
-        },
-        oneose: () => {
-          setTimeout(() => {
-            dispatch(setHashratesLoader(false));
-          }, 500);
-        }
-      });
-    } catch (err: any) {
-      return rejectWithValue({
-        message: err?.message,
-        code: err.code,
-        status: err.status
-      });
-    }
-  }
-);
+
 
 export const stopHashrates = createAppAsyncThunk(
   'relay/stopHashrate',

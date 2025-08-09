@@ -6,7 +6,6 @@ import { StyledCard } from '@components/styled/StyledCard';
 import { Chip } from '@mui/material';
 import Box from '@mui/material/Box';
 import {
-  getAddress,
   getIsPayoutsLoading,
   getPayouts,
   getUnconfirmedBalance
@@ -21,7 +20,6 @@ const PayoutsTable = () => {
   const columns = payoutsColumns();
   const isLoading = useSelector(getIsPayoutsLoading);
   const payouts = useSelector(getPayouts);
-  const address = useSelector(getAddress);
   const unconfirmedBalance = useSelector(getUnconfirmedBalance);
 
   return (
@@ -43,7 +41,7 @@ const PayoutsTable = () => {
                 justifyContent: 'center',
                 alignItems: 'center'
               }}>
-              {unconfirmedBalance > 0 && (
+              {unconfirmedBalance > 0 && !isLoading &&  (
                 <CustomTooltip title={t('unconfirmedBalance')} placement="top" textBold>
                   <Chip
                     label={lokiToFlc(unconfirmedBalance) + ' FLC'}
@@ -55,12 +53,10 @@ const PayoutsTable = () => {
             </Box>
           </Box>
         </SectionHeader>
-        {isLoading && address && <ProgressLoader value={payouts.length} />}
-        {!isLoading && address && (
+        {isLoading ? (<ProgressLoader value={payouts.length} />) : (
           <CustomTable
             columns={columns}
             rows={payouts}
-            isLoading={isLoading}
             initialState={{
               pagination: { paginationModel: { pageSize: 50 } },
               sorting: {
@@ -68,7 +64,7 @@ const PayoutsTable = () => {
               }
             }}
           />
-        )}
+        ) }
       </Box>
     </StyledCard>
   );
